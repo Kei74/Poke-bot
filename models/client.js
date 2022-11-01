@@ -1,7 +1,8 @@
 const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
-const { commandsPath } = require('../constants.js');
+const constPath = path.join(__dirname, '..', 'constants.js');
+const { commandsPath } = require(constPath);
 // Create a new Client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 

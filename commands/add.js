@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
 const fs = require('node:fs');
-const { pokeModelPath, pokeListPath } = require('../constants.js');
+const path = require('node:path');
+const constPath = path.join(__dirname, '..', 'constants.js');
+const { pokeModelPath, pokeListPath } = require(constPath);
 const Poke = require(pokeModelPath);
 
 module.exports = {
