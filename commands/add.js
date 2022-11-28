@@ -1,8 +1,7 @@
-const { SlashCommandBuilder } = require('discord.js');
-const fs = require('node:fs');
+const { SlashCommandBuilder, ChannelType } = require('discord.js');
 const path = require('node:path');
-const constPath = path.join(__dirname, '..', 'constants.js');
-const { pokeModelPath, pokeListPath } = require(constPath);
+const constPath = path.join(__dirname, '..', 'constants', 'paths.js');
+const { pokeModelPath } = require(constPath);
 const Poke = require(pokeModelPath);
 
 module.exports = {
@@ -16,9 +15,10 @@ module.exports = {
 		.addStringOption(option =>
 			option.setName('message')
 				.setDescription('Poke message'))
-		.addStringOption(option =>
+		.addChannelOption(option =>
 			option.setName('channel')
-				.setDescription('Channel where the poke will be sent')),
+				.setDescription('Channel where the poke will be sent')
+				.addChannelTypes(ChannelType.GuildText)),
 
 	async execute(interaction) {
 
@@ -29,17 +29,11 @@ module.exports = {
 		const channel = interaction.options.getChannel('channel')
 			? interaction.options.getChannel('channel')
 			: interaction.channel;
-		const guild = interaction.guild;
-		const poke = new Poke(interaction.user, target, channel, guild, message);
-
-		const pokeList = JSON.parse(fs.readFileSync(pokeListPath).toString());
-		pokeList.push(poke);
 		try {
-			fs.writeFileSync(pokeListPath, JSON.stringify(pokeList));
-			await interaction.reply('Poke Created');
+			const poke = new Poke(interaction.user.id, target.id, channel.id, message);
+			await interaction.reply(`Poke Created: ${poke.pokeId}`);
 		} catch (error) {
-			console.error(`Error writing poke to file: ${error}`);
-			await interaction.reply(`Error, Poke not saved in file: ${error}`);
+			await interaction.reply(`Error creating poke: ${error}`);
 		}
 	},
 };

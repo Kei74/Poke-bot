@@ -1,6 +1,6 @@
 const fs = require('node:fs');
-
-const { dataPath, pokeListPath } = require('../constants.js');
+const path = require('node:path');
+const { dataPath, pokeListPath } = require(path.join(__dirname, 'constants', 'paths.js'));
 
 try {
 	fs.mkdirSync(dataPath);

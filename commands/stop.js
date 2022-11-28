@@ -1,6 +1,4 @@
 const { SlashCommandBuilder } = require('discord.js');
-// const { clientPath } = require('../constants.js');
-// const client = require(clientPath);
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stop')

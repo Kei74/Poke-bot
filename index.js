@@ -1,7 +1,6 @@
 const dotenv = require('dotenv');
 const path = require('node:path');
-const constPath = path.join(__dirname, 'constants.js');
-console.log(constPath);
+const constPath = path.join(__dirname, 'constants', 'paths.js');
 const { clientPath } = require(constPath);
 const client = require(clientPath);
 
