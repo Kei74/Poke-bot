@@ -16,7 +16,7 @@ for (const file of commandFiles) {
 	if ('data' in command && 'execute' in command) {
 		commands.set(command.data.name, command);
 		commandData.push(command.data.toJSON());
-		console.log(`Set command: ${command.data.name}`);
+		// console.log(`Set command: ${command.data.name}`);
 	} else {
 		console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 	}

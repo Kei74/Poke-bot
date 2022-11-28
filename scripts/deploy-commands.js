@@ -1,21 +1,11 @@
 const { REST, Routes } = require('discord.js');
-const fs = require('node:fs');
 const dotenv = require('dotenv');
 const path = require('node:path');
 const constPath = path.join(__dirname, '..', 'constants', 'paths.js');
-const { commandsDirPath } = require(constPath);
+const { commandsPath } = require(constPath);
 
-const commands = [];
-const commandFiles = fs.readdirSync(commandsDirPath).filter(file => file.endsWith('.js'));
+const { data: commands } = require(commandsPath);
 
-for (const file of commandFiles) {
-	try {
-		const command = require(path.join(commandsDirPath, file));
-		commands.push(command.data.toJSON());
-	} catch (error) {
-		console.error(`Error pushing command from file ${file}: ${error}`);
-	}
-}
 dotenv.config();
 const rest = new REST({ version: '10' }).setToken(process.env.token);
 
