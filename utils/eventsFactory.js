@@ -3,10 +3,11 @@ const path = require('node:path');
 const constPath = path.join(__dirname, '..', 'constants', 'paths.js');
 const { eventsDirPath } = require(constPath);
 
-module.exports = class Events {
-	static eventFiles = fs.readdirSync(eventsDirPath).filter(file => file.endsWith('.js'));
-	static addEvents(client) {
-		for (const file of Events.eventFiles) {
+const eventFiles = fs.readdirSync(eventsDirPath).filter(file => file.endsWith('.js'));
+
+module.exports = {
+	eventsFactory(client) {
+		for (const file of eventFiles) {
 			const filePath = path.join(eventsDirPath, file);
 			const event = require(filePath);
 			if (event.once) {
@@ -15,5 +16,6 @@ module.exports = class Events {
 				client.on(event.name, (...args) => event.execute(...args));
 			}
 		}
-	}
+	},
+	eventFiles,
 };

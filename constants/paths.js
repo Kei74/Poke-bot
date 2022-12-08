@@ -6,7 +6,7 @@ module.exports = {
 	dataPath : path.join(__dirname, '..', 'data'),
 	pokeListPath : path.join(__dirname, '..', 'data', 'pokelist.json'),
 	commandsDirPath : path.join(__dirname, '..', 'commands'),
-	commandsPath : path.join(__dirname, '..', 'models', 'commands.js'),
+	commandsFactPath : path.join(__dirname, '..', 'utils', 'commandsFactory.js'),
 	eventsDirPath : path.join(__dirname, '..', 'events'),
-	eventsPath : path.join(__dirname, '..', 'models', 'events.js'),
+	eventsFactPath : path.join(__dirname, '..', 'utils', 'eventsFactory.js'),
 };

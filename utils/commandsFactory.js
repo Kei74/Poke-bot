@@ -22,16 +22,12 @@ function readCommandList() {
 	return commandList;
 }
 
-function readCommandData() {
-	const commandData = readCommandList().map(command => command.data.toJSON());
-	return commandData;
-}
 
-module.exports = class Commands {
-	static addCommands(client) {
+const commandData = readCommandList().map(command => command.data.toJSON());
+
+module.exports = {
+	commandsFactory(client) {
 		client.commands = readCommandList();
-	}
-	static fetchData() {
-		return readCommandData();
-	}
+	},
+	commandData,
 };
