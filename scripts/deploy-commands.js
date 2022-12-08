@@ -4,8 +4,8 @@ const path = require('node:path');
 const constPath = path.join(__dirname, '..', 'constants', 'paths.js');
 const { commandsPath } = require(constPath);
 
-const { data: commands } = require(commandsPath);
-
+const Commands = require(commandsPath);
+const commands = Commands.fetchData();
 dotenv.config();
 const rest = new REST({ version: '10' }).setToken(process.env.token);
 
