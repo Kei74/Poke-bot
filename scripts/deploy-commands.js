@@ -1,7 +1,7 @@
 const { REST, Routes } = require('discord.js');
 const dotenv = require('dotenv');
-const path = require('node:path');
-const constPath = path.join(__dirname, '..', 'constants', 'paths.js');
+const { join } = require('node:path');
+const constPath = join(__dirname, '..', 'constants', 'paths.js');
 const { commandsFactPath } = require(constPath);
 
 const { commandData } = require(commandsFactPath);

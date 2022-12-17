@@ -1,7 +1,7 @@
 const { Collection } = require('discord.js');
 const fs = require('node:fs');
-const path = require('node:path');
-const constPath = path.join(__dirname, '..', 'constants', 'paths.js');
+const { join } = require('node:path');
+const constPath = join(__dirname, 'constants', 'paths.js');
 const { commandsDirPath } = require(constPath);
 
 const commandFiles = fs.readdirSync(commandsDirPath).filter(file => file.endsWith('.js'));
@@ -9,7 +9,7 @@ const commandFiles = fs.readdirSync(commandsDirPath).filter(file => file.endsWit
 function readCommandList() {
 	const commandList = new Collection();
 	for (const file of commandFiles) {
-		const filePath = path.join(commandsDirPath, file);
+		const filePath = join(commandsDirPath, file);
 		const command = require(filePath);
 		// Set a new item in the Collection with the key as the command name and the value as the exported module
 		if ('data' in command && 'execute' in command) {
