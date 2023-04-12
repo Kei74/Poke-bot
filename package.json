@@ -4,14 +4,16 @@
   "description": "Bot that pokes people with messages at semi-random times",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Kei74",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
-    "node-cron": "^3.0.2"
+    "sequelize": "^6.27.0",
+    "sqlite3": "^5.1.4"
   },
   "devDependencies": {
     "eslint": "^8.26.0"

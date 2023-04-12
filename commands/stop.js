@@ -1,4 +1,9 @@
 const { SlashCommandBuilder } = require('discord.js');
+const { join } = require('node:path');
+const constPath = join('..', 'constants', 'paths.js');
+const { eventsConstPath } = require(constPath);
+const { StopBot } = require(eventsConstPath);
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stop')
@@ -6,10 +11,7 @@ module.exports = {
 	async execute(interaction) {
 		await interaction.reply('Shutting down');
 		console.log('Terminating session');
-		try {
-			interaction.client.destroy();
-		} catch (error) {
-			console.error(`Error ending session: ${error}`);
-		}
+		interaction.client.emit(StopBot, interaction.client);
+		console.log('Logging Off');
 	},
 };

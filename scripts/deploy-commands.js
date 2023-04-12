@@ -2,9 +2,9 @@ const { REST, Routes } = require('discord.js');
 const dotenv = require('dotenv');
 const { join } = require('node:path');
 const constPath = join(__dirname, '..', 'constants', 'paths.js');
-const { commandsFactPath } = require(constPath);
+const { commandsAttacherPath } = require(constPath);
 
-const { commandData } = require(commandsFactPath);
+const { commandData } = require(commandsAttacherPath);
 dotenv.config();
 const rest = new REST({ version: '10' }).setToken(process.env.token);
 

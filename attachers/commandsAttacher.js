@@ -1,10 +1,10 @@
 const { Collection } = require('discord.js');
-const fs = require('node:fs');
+const { readdirSync } = require('node:fs');
 const { join } = require('node:path');
-const constPath = join(__dirname, 'constants', 'paths.js');
+const constPath = join(__dirname, '..', 'constants', 'paths.js');
 const { commandsDirPath } = require(constPath);
 
-const commandFiles = fs.readdirSync(commandsDirPath).filter(file => file.endsWith('.js'));
+const commandFiles = readdirSync(commandsDirPath).filter(file => file.endsWith('.js'));
 
 function readCommandList() {
 	const commandList = new Collection();
@@ -26,7 +26,8 @@ function readCommandList() {
 const commandData = readCommandList().map(command => command.data.toJSON());
 
 module.exports = {
-	commandsFactory(client) {
+	name: 'commands',
+	attach(client) {
 		client.commands = readCommandList();
 	},
 	commandData,

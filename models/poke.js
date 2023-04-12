@@ -1,43 +1,81 @@
-const fs = require('node:fs');
-const path = require('node:path');
-const constPath = path.join(__dirname, '..', 'constants', 'paths.js');
-const { pokeListPath } = require(constPath);
+/* eslint-disable no-inline-comments */
+const { DataTypes, Model } = require('sequelize');
+const { join } = require('node:path');
+const constPath = join(__dirname, '..', 'constants', 'paths.js');
+const { databasePath } = require(constPath);
+const sequelize = require(databasePath);
 
-module.exports = class Poke {
-
+class Poke extends Model {
 	static idList = new Set();
 
 	static generateID() {
 		const newId = Math.floor(Math.random() * 100000);
+		if (Poke.idList.size >= 100000) throw 'Error: Poke storage limit reached';
 		return Poke.idList.has(newId) ? Poke.generateID() : newId;
 	}
 
-	constructor(authorId, targetId, channelId, message = null) {
-		this.pokeId = Poke.generateID();
-		Poke.idList.add(this.pokeId);
-		this.authorId = authorId;
-		this.targetId = targetId;
-		this.channelId = channelId;
-		this.message = message;
-		console.log(`Poke ${this.pokeId} created by ${authorId}, with target ${targetId}, in channel ${channelId} and message ${message}`);
-		Poke.pokeList.push(this);
+	static generateTimeDelay() {
+		const minHrs = 24;
+		const maxHrs = 120;
+		const generatedTime = (
+			((Math.random() * (maxHrs - minHrs)) // Random generate max-min
+				+ minHrs)	// + minimum hrs
+		//	* 60 		// to minutes
+		//	* 60 		// to seconds
+			* 1000		// to milliseconds
+		);
+		console.log(`Generated time: ${generatedTime}`);
+		return generatedTime;
 	}
 
-	static pokeList = JSON.parse(fs.readFileSync(pokeListPath).toString());
-	static async saveList() {
-		try {
-			fs.writeFile(pokeListPath, JSON.stringify(Poke.pokeList));
-			console.log('Pokelist saved to file');
-		} catch (error) {
-			console.error(`Error writing poke to file: ${error}`);
-		}
+	static getTimeLeft(timeout) {
+		return Math.ceil((timeout._idleStart + timeout._idleTimeout - Date.now()) / 1000);
 	}
-	static refreshList() {
-		try {
-			Poke.pokeList = JSON.parse(fs.readFileSync(pokeListPath).toString());
-			console.log('Pokelist refreshed');
-		} catch (error) {
-			console.error(`Error refreshing list: ${error}`);
-		}
+
+	activate(client) {
+		const pokeChannel = client.channels.resolve(this.channelID);
+		console.log(`Poke ${this.ID} activated: @${this.targetID}, by ${this.authorID}, message: ${this.message}`);
+		const timeDelay = this.remainingTime
+			? this.remainingTime
+			: Poke.generateTimeDelay();
+		const pokemessage = this.message? this.message : ':point_left:';
+		this.timeout = setTimeout(() => {
+			pokeChannel.send(`Poke ID ${this.ID}: <@${this.targetID}> ${pokemessage}`);
+			this.remainingTime = null;
+			// client.emit()
+		}, timeDelay);
+		if (!Poke.idList.has(this.pokeID)) {Poke.idList.add(this.pokeID);}
+		return this.timeout;
 	}
-};
+
+	pauseAndUpdate() {
+		const currRemainingTime = Poke.getTimeLeft(this.timeout);
+		this.update({ remainingTime: currRemainingTime });
+		clearTimeout(this.timeout);
+	}
+
+	remove() {
+		Poke.idList.delete(this.pokeID);
+		clearTimeout(this.timeout);
+		this.destroy();
+	}
+
+}
+Poke.init({
+	pokeID: {
+		type: DataTypes.INTEGER,
+		allowNull: false,
+		unique: true,
+	},
+	authorID: { type: DataTypes.STRING, allowNull: false },
+	channelID: { type: DataTypes.STRING, allowNull: false },
+	targetID: { type: DataTypes.STRING, allowNull: false },
+	message: { type: DataTypes.TEXT },
+	remainingTime: { type: DataTypes.INTEGER },
+}, {
+	sequelize,
+	modelName: 'Poke',
+});
+
+// Poke.sync().then(() => {console.log('Sync done');});
+module.exports = Poke;
