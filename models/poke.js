@@ -35,13 +35,13 @@ class Poke extends Model {
 
 	activate(client) {
 		const pokeChannel = client.channels.resolve(this.channelID);
-		console.log(`Poke ${this.ID} activated: @${this.targetID}, by ${this.authorID}, message: ${this.message}`);
+		console.log(`Poke ${this.pokeID} activated: @${this.targetID}, by ${this.authorID}, message: ${this.message}`);
 		const timeDelay = this.remainingTime
 			? this.remainingTime
 			: Poke.generateTimeDelay();
 		const pokemessage = this.message? this.message : ':point_left:';
 		this.timeout = setTimeout(() => {
-			pokeChannel.send(`Poke ID ${this.ID}: <@${this.targetID}> ${pokemessage}`);
+			pokeChannel.send(`Poke ID ${this.pokeID}: <@${this.targetID}> ${pokemessage}`);
 			this.remainingTime = null;
 			client.emit(PokeSent, client, this)
 		}, timeDelay);
