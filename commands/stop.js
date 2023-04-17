@@ -1,8 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { join } = require('node:path');
-const constPath = join('..', 'constants', 'paths.js');
-const { eventsConstPath } = require(constPath);
-const { StopBot } = require(eventsConstPath);
+//const { join } = require('node:path');
+//const constPath = join('..', 'constants', 'paths.js');
+//const { eventsConstPath } = require(constPath);
+const { StopBot } = require('../constants/events.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()

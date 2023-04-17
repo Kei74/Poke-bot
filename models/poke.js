@@ -1,9 +1,10 @@
 /* eslint-disable no-inline-comments */
 const { DataTypes, Model } = require('sequelize');
-const { join } = require('node:path');
-const constPath = join(__dirname, '..', 'constants', 'paths.js');
-const { databasePath } = require(constPath);
-const sequelize = require(databasePath);
+//const { join } = require('node:path');
+//const constPath = join(__dirname, '..', 'constants', 'paths.js');
+//const { databasePath } = require(constPath);
+const sequelize = require('../models/database.js');
+const { PokeSent } = require('../constants/events.js')
 
 class Poke extends Model {
 	static idList = new Set();
@@ -34,15 +35,15 @@ class Poke extends Model {
 
 	activate(client) {
 		const pokeChannel = client.channels.resolve(this.channelID);
-		console.log(`Poke ${this.ID} activated: @${this.targetID}, by ${this.authorID}, message: ${this.message}`);
+		console.log(`Poke ${this.pokeID} activated: @${this.targetID}, by ${this.authorID}, message: ${this.message}`);
 		const timeDelay = this.remainingTime
 			? this.remainingTime
 			: Poke.generateTimeDelay();
 		const pokemessage = this.message? this.message : ':point_left:';
 		this.timeout = setTimeout(() => {
-			pokeChannel.send(`Poke ID ${this.ID}: <@${this.targetID}> ${pokemessage}`);
+			pokeChannel.send(`Poke ID ${this.pokeID}: <@${this.targetID}> ${pokemessage}`);
 			this.remainingTime = null;
-			// client.emit()
+			client.emit(PokeSent, client, this)
 		}, timeDelay);
 		if (!Poke.idList.has(this.pokeID)) {Poke.idList.add(this.pokeID);}
 		return this.timeout;
