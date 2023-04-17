@@ -43,7 +43,7 @@ class Poke extends Model {
 		this.timeout = setTimeout(() => {
 			pokeChannel.send(`Poke ID ${this.ID}: <@${this.targetID}> ${pokemessage}`);
 			this.remainingTime = null;
-			client.emit(PokeSent, client, poke)
+			client.emit(PokeSent, client, this)
 		}, timeDelay);
 		if (!Poke.idList.has(this.pokeID)) {Poke.idList.add(this.pokeID);}
 		return this.timeout;
