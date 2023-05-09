@@ -1,10 +1,12 @@
+// @ts-nocheck
+/* eslint-disable indent */
 /* eslint-disable no-inline-comments */
 const { DataTypes, Model } = require('sequelize');
-//const { join } = require('node:path');
-//const constPath = join(__dirname, '..', 'constants', 'paths.js');
-//const { databasePath } = require(constPath);
+// const { join } = require('node:path');
+// const constPath = join(__dirname, '..', 'constants', 'paths.js');
+// const { databasePath } = require(constPath);
 const sequelize = require('../models/database.js');
-const { PokeSent } = require('../constants/events.js')
+const { PokeSent } = require('../constants/events.js');
 
 class Poke extends Model {
 	static idList = new Set();
@@ -30,6 +32,8 @@ class Poke extends Model {
 	}
 
 	static getTimeLeft(timeout) {
+		console.log(timeout._idleStart); // debugging temp
+		console.log(timeout._idleTimeout); // debugging temp
 		return Math.ceil((timeout._idleStart + timeout._idleTimeout - Date.now()) / 1000);
 	}
 
@@ -39,11 +43,11 @@ class Poke extends Model {
 		const timeDelay = this.remainingTime
 			? this.remainingTime
 			: Poke.generateTimeDelay();
-		const pokemessage = this.message? this.message : ':point_left:';
+		const pokemessage = this.message ? this.message : ':point_left:';
 		this.timeout = setTimeout(() => {
 			pokeChannel.send(`Poke ID ${this.pokeID}: <@${this.targetID}> ${pokemessage}`);
 			this.remainingTime = null;
-			client.emit(PokeSent, client, this)
+			client.emit(PokeSent, client, this);
 		}, timeDelay);
 		if (!Poke.idList.has(this.pokeID)) {Poke.idList.add(this.pokeID);}
 		return this.timeout;
@@ -52,6 +56,7 @@ class Poke extends Model {
 	pauseAndUpdate() {
 		const currRemainingTime = Poke.getTimeLeft(this.timeout);
 		this.update({ remainingTime: currRemainingTime });
+		// console.log(`Pausing poke ${this.pokeID} with remaining ${currRemainingTime} and saved ${this.remainingTime}`);
 		clearTimeout(this.timeout);
 	}
 
@@ -72,7 +77,7 @@ Poke.init({
 	channelID: { type: DataTypes.STRING, allowNull: false },
 	targetID: { type: DataTypes.STRING, allowNull: false },
 	message: { type: DataTypes.TEXT },
-	remainingTime: { type: DataTypes.INTEGER },
+	remainingTime: { type: DataTypes.FLOAT },
 }, {
 	sequelize,
 	modelName: 'Poke',
