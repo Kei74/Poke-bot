@@ -36,8 +36,8 @@ dotenv.config();
 client.login(process.env.TOKEN);
 
 if (process.env.KEEPALIVE) {
-	const server = require('./utils/keepAlive.js');
-	server.listen(server.PORT, () => console.log(`Keep alive server running on port ${PORT}`));
+	const { server, PORT } = require('./utils/keepAlive.js');
+	server.listen(PORT, () => console.log(`Keep alive server running on port ${PORT}`));
 
 }
 
