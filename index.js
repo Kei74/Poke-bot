@@ -34,4 +34,11 @@ client.once(Events.ClientReady, () => {
 // Log in to Discord using Token
 dotenv.config();
 client.login(process.env.TOKEN);
+
+if (process.env.KEEPALIVE) {
+	const server = require('./utils/keepAlive.js');
+	server.listen(server.PORT, () => console.log(`Keep alive server running on port ${PORT}`));
+
+}
+
 console.log('Ready');
